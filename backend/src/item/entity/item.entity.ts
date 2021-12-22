@@ -20,6 +20,7 @@ export class Item {
   @Column({
     name: 'is_marked',
     type: 'boolean',
+    default: false
   })
-  isMarked: Boolean;
+  isMarked?: Boolean;
 }
