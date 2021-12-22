@@ -11,15 +11,16 @@ export class ItemService {
     private readonly itemRepo: Repository<Item>,
   ) { }
 
-  findAll(): Promise<Item[]> {
-    return this.itemRepo.find();
+  findAll(folderId: number): Promise<Item[]> {
+    return this.itemRepo.find({ folderId });
   }
 
   findOne(id: number): Promise<Item> {
     return this.itemRepo.findOne({ id });
   }
 
-  create(body: any): void {
+  create(folderId: number, body: any): void {
+    this.itemRepo.merge(body, { folderId });
     this.itemRepo.save(body);
   }
 
