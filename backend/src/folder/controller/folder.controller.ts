@@ -11,7 +11,7 @@ import { Folder } from '../entity/folder.entity';
 
 import { FolderService } from '../service/folder.service';
 
-@Controller('folder')
+@Controller('folders')
 export class FolderController {
   constructor(private readonly folderService: FolderService) { }
 
