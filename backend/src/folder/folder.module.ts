@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { FolderController } from './controller/folder.controller';
 
-@Module({})
+@Module({
+  controllers: [FolderController]
+})
 export class FolderModule {}
