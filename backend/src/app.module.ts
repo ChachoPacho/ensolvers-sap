@@ -5,8 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ItemModule } from './item/item.module';
 import { FolderModule } from './folder/folder.module';
-import { FolderController } from './backend/src/folder/controller/folder.controller';
-import { FolderController } from './src/folder/controller/folder.controller';
 
 @Module({
   imports: [
@@ -26,7 +24,7 @@ import { FolderController } from './src/folder/controller/folder.controller';
 
     FolderModule
   ],
-  controllers: [AppController, FolderController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule { }
