@@ -2,7 +2,9 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Folder } from 'src/folder/entity/folder.entity';
 
 @Entity('items')
 export class Item {
@@ -23,4 +25,11 @@ export class Item {
     default: false
   })
   isMarked?: Boolean;
+
+  @ManyToOne(() => Folder, { cascade: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  @Column({
+    type: 'bigint',
+    name: 'folder_id',
+  })
+  folderId: number
 }

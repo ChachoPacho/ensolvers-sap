@@ -12,15 +12,16 @@ import { DeleteResult } from 'typeorm';
 import { ItemService } from '../service/item.service';
 import { Item } from '../entity/item.entity';
 
-@Controller('items')
+@Controller('folders/:folderId/items')
 export class ItemController {
   constructor(private readonly itemService: ItemService) { }
 
   @Get()
   async getAll(
+    @Param('folderId') folderId: number,
   ): Promise<Item[]> {
     try {
-      return await this.itemService.findAll();
+      return await this.itemService.findAll(folderId);
     }
     catch (err) {
       return err;
@@ -41,10 +42,11 @@ export class ItemController {
 
   @Post()
   create(
+    @Param('folderId') folderId: number,
     @Body() body: any,
   ): void {
     try {
-      this.itemService.create(body);
+      this.itemService.create(folderId, body);
     }
     catch (err) {
       return err;
