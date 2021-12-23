@@ -1,40 +1,64 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import FolderComponent from './components/FolderComponent';
-import { APIFolder } from './common/config';
+import { APIFolder, APIItems } from './common/config';
 import HeaderComponent from './components/HeaderComponent';
+import ItemComponent from './components/ItemComponent';
 
 function App() {
   const [folder, setFolder] = useState(null);
   const [elementTitle, setElementTitle] = useState("");
-  const [updateFolders, UpdateFolders] = useState(true);
-  const [updateItems, UpdateItems] = useState(true);
+  const [updateElements, UpdateElements] = useState(true);
+
   const [folderList, setFolderList] = useState([]);
+  const [itemList, setitemList] = useState([]);
 
   useEffect(async () => {
-    if (window.location.hash) {
+    setElementTitle("");
+    const hash = window.location.hash;
 
-      return
+    if (hash) {
+      const folderApi = await getFolderByHash(hash);
+      const items = await new APIItems(folderApi.id).getItems();
+      return setitemList(items);
     }
 
-    const response = await APIFolder.getFolders();
-    setFolderList(response);
-  }, [updateFolders])
+    const folders = await APIFolder.getFolders();
+    setFolderList(folders);
+  }, [updateElements])
+
+  const getFolderByHash = async (hash) => {
+    let folderApi = folder;
+    hash = hash.replace("#", "");
+
+    if (!folder) {
+      folderApi = await APIFolder.getFolder(hash);
+
+      setFolder(folderApi);
+    }
+
+    return folderApi;
+  }
 
   const addElement = async () => {
     if (elementTitle) {
 
       if (folder) {
-        UpdateItems(e => !e);
-
-        return
+        await new APIItems(folder.id).createItem(elementTitle);
+      } else {
+        await APIFolder.createFolder(elementTitle);
       }
 
-      await APIFolder.createFolder(elementTitle);
-
       setElementTitle("");
-      UpdateFolders(e => !e);
+      UpdateElements(e => !e);
     }
+  }
+
+  const Navigate = async (folder) => {
+    window.location.hash = (folder) ? folder.id : "";
+
+    setFolder(folder);
+    UpdateElements(e => !e);
   }
 
   const writeTitle = (e) => setElementTitle(e.target.value);
@@ -43,13 +67,13 @@ function App() {
     <div className="App">
       <div className="container">
         <div className="Folder-section">
-          <HeaderComponent folder={folder} SelectFolder={setFolder} />
+          <HeaderComponent folder={folder} SelectFolder={Navigate} />
         </div>
         <div className="Element-container">
           {
             (folder)
-              ? ""
-              : FolderComponent(folderList, UpdateFolders, setFolder)
+              ? ItemComponent(folder.id, itemList, UpdateElements)
+              : FolderComponent(folderList, UpdateElements, Navigate)
           }
         </div>
         <div className="Element-appender">

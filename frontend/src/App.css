@@ -17,8 +17,13 @@
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  font-size: 2em;
+  font-size: 1.8em;
   font-weight: bold;
+  color: gray;
+}
+
+.Folder-link {
+  color: black;
 }
 
 .Element-container {
