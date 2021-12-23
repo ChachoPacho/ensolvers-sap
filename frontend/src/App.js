@@ -1,17 +1,22 @@
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FolderComponent from './components/FolderComponent';
 import { APIFolder } from './common/config';
 
 function App() {
-  const [folder, setFolder] = useState("");
+  const [folder, setFolder] = useState(null);
   const [elementTitle, setElementTitle] = useState("");
   const [updateFolders, UpdateFolders] = useState(true);
   const [updateItems, UpdateItems] = useState(true);
+  const [folderList, setFolderList] = useState([]);
+
+  useEffect(async () => {
+    const response = await APIFolder.getFolders();
+    setFolderList(response);
+  }, [updateFolders])
 
   const addElement = async () => {
     if (elementTitle) {
-      console.log(elementTitle, folder);
 
       if (folder) {
         UpdateItems(e => !e);
@@ -26,20 +31,22 @@ function App() {
     }
   }
 
+  const goHome = () => setFolder(null);
+
   const writeTitle = (e) => setElementTitle(e.target.value);
 
   return (
     <div className="App">
       <div className="container">
         <div className="Folder-section">
-          <a className="Folder-link">Folders</a>
-          {(folder) ? " > " + folder : ""}
+          <a className="Folder-link" onClick={goHome}>Folders</a>
+          {folder ? " > " + folder.title : ""}
         </div>
         <div className="Element-container">
           {
             (folder)
-              ? folder
-              : FolderComponent(updateFolders, UpdateFolders)
+              ? ""
+              : FolderComponent(folderList, UpdateFolders, setFolder)
           }
         </div>
         <div className="Element-appender">

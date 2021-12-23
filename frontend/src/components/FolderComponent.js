@@ -2,15 +2,9 @@ import '../App.css';
 import { useEffect, useState } from 'react';
 import { APIFolder } from '../common/config';
 
-function FolderComponent(handleUpdate, Updater) {
-  const [folders, setFolders] = useState([]);
+function FolderComponent(folders, Updater, SelectFolder) {
 
-  useEffect(async () => {
-    const response = await APIFolder.getFolders();
-    setFolders(response);
-  }, [handleUpdate])
-
-  const deleteElement = async (folderId) => {
+  const deleteFolder = async (folderId) => {
     await APIFolder.deleteFolder(folderId);
     Updater(e => !e);
   }
@@ -22,8 +16,8 @@ function FolderComponent(handleUpdate, Updater) {
           <div key={folder.id} className="Element-item">
             <div className="Item-title">- {folder.title}</div>
             <div className="Item-link">
-              <a className="App-link">View items</a>
-              <a className="App-link" onClick={() => deleteElement(folder.id)} >Remove</a>
+              <a className="App-link" onClick={() => SelectFolder(folder)} >View items</a>
+              <a className="App-link" onClick={() => deleteFolder(folder.id)} >Remove</a>
             </div>
           </div>
         ))
