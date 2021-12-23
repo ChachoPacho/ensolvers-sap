@@ -1,8 +1,9 @@
 import '../App.css';
 
-function ExtraDirectory(title) {
+function ExtraDirectory(title, goHome) {
   return (
     <>
+      <a className="App-link" onClick={goHome}>Folders</a>
       <div className="Decorator-separator">{'>'}</div> {title}
     </>
   );
@@ -14,11 +15,10 @@ function HeaderComponent({ folder, SelectFolder }) {
 
   return (
     <>
-      <a className="Folder-link" onClick={goHome}>Folders</a>
       {
         folder
-          ? ExtraDirectory(folder.title)
-          : ""
+          ? ExtraDirectory(folder.title, goHome)
+          : <a className="Folder-link" >Folders</a>
       }
     </>
   );
