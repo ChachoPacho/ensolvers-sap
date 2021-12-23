@@ -14,6 +14,10 @@ export class FolderService {
     return this.folderRepo.find();
   }
 
+  findOne(id: number): Promise<Folder> {
+    return this.folderRepo.findOne(id);
+  }
+
   create(body: any): void {
     this.folderRepo.save(body);
   }
