@@ -26,6 +26,18 @@ export class FolderController {
     }
   }
 
+  @Get(":id")
+  async getOne(
+    @Param() id: number
+  ): Promise<Folder> {
+    try {
+      return await this.folderService.findOne(id);
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
   @Post()
   create(
     @Body() body: any,
