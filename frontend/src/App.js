@@ -2,6 +2,7 @@ import './App.css';
 import { useEffect, useState } from 'react';
 import FolderComponent from './components/FolderComponent';
 import { APIFolder } from './common/config';
+import HeaderComponent from './components/HeaderComponent';
 
 function App() {
   const [folder, setFolder] = useState(null);
@@ -11,6 +12,11 @@ function App() {
   const [folderList, setFolderList] = useState([]);
 
   useEffect(async () => {
+    if (window.location.hash) {
+
+      return
+    }
+
     const response = await APIFolder.getFolders();
     setFolderList(response);
   }, [updateFolders])
@@ -31,16 +37,13 @@ function App() {
     }
   }
 
-  const goHome = () => setFolder(null);
-
   const writeTitle = (e) => setElementTitle(e.target.value);
 
   return (
     <div className="App">
       <div className="container">
         <div className="Folder-section">
-          <a className="Folder-link" onClick={goHome}>Folders</a>
-          {folder ? " > " + folder.title : ""}
+          <HeaderComponent folder={folder} SelectFolder={setFolder} />
         </div>
         <div className="Element-container">
           {
@@ -50,7 +53,12 @@ function App() {
           }
         </div>
         <div className="Element-appender">
-          <input className="Appender-textInput" value={elementTitle} onChange={writeTitle} placeholder={"New " + (folder ? "Task" : "Folder")} />
+          <input
+            className="Appender-textInput"
+            value={elementTitle}
+            onChange={writeTitle}
+            placeholder={"New " + (folder ? "Task" : "Folder")}
+          />
           <button className="Appender-button" onClick={addElement}>Add</button>
         </div>
       </div>
