@@ -6,36 +6,81 @@ export class API {
     return `${API.folders}/${folderId}`;
   }
 
-  static getItemsApi(folderId, itemId) {
-    let apiUrl = `${API.folders}/${folderId}/items`;
-
-    if (itemId) {
-      apiUrl += `/${itemId}`;
-    }
-
-    return apiUrl;
-  }
-}
-
-export class APIFolder extends API {
-  static async getFolders() {
-    const response = await fetch(APIFolder.folders);
+  static async getElements(url) {
+    const response = await fetch(url);
     return response.json();
   }
 
-  static async createFolder(title) {
-    return await fetch(APIFolder.folders, {
+  static createElement(url, data) {
+    return fetch(url, {
       method: "POST",
-      body: JSON.stringify({ title }),
+      body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json'
       }
     });
   }
 
-  static async deleteFolder(folderId) {
-    return await fetch(API.getFoldersApi(folderId), {
-      method: "DELETE"
+  static deleteElement(url) {
+    return fetch(url, { method: "DELETE" });
+  }
+}
+
+export class APIFolder extends API {
+
+  static getFolders() {
+    return API.getElements(APIFolder.folders);
+  }
+
+  static getFolder(folderId) {
+    return API.getElements(API.getFoldersApi(folderId));
+  }
+
+  static createFolder(title) {
+    return API.createElement(APIFolder.folders, { title });
+  }
+
+  static deleteFolder(folderId) {
+    return API.deleteElement(API.getFoldersApi(folderId));
+  }
+
+}
+
+export class APIItems extends API {
+
+  constructor(folderId) {
+    super();
+    this.api = `${API.getFoldersApi(folderId)}/items`;
+  }
+
+  getItemsApi(itemId) {
+    return `${this.api}/${itemId}`;
+  }
+
+  getItems() {
+    return API.getElements(this.api);
+  }
+
+  getItem(itemId) {
+    return API.getElements(this.getItemsApi(itemId));
+  }
+
+  createItem(title) {
+    return API.createElement(this.api, { title });
+  }
+
+  deleteItem(itemId) {
+    return API.deleteElement(this.getItemsApi(itemId));
+  }
+
+  modifyItem(itemId, data) {
+    return fetch(this.getItemsApi(itemId), {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
   }
+
 }

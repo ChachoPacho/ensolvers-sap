@@ -1,29 +1,94 @@
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FolderComponent from './components/FolderComponent';
-import { APIFolder } from './common/config';
+import { APIFolder, APIItems } from './common/config';
+import HeaderComponent from './components/HeaderComponent';
+import ItemComponent from './components/ItemComponent';
+import EditComponent from './components/EditComponent';
 
 function App() {
-  const [folder, setFolder] = useState("");
+  const [folder, setFolder] = useState(null);
   const [elementTitle, setElementTitle] = useState("");
-  const [updateFolders, UpdateFolders] = useState(true);
-  const [updateItems, UpdateItems] = useState(true);
+  const [updateElements, UpdateElements] = useState(true);
+
+  const [folderList, setFolderList] = useState([]);
+  const [itemList, setitemList] = useState([]);
+  const [editItem, setEditItem] = useState(null);
+
+  useEffect(async () => {
+    setElementTitle("");
+    setEditItem(null);
+    const hash = window.location.hash;
+
+    if (hash) {
+      const folderApi = await getFolderByHash(hash);
+      const items = await new APIItems(folderApi.id).getItems();
+      return setitemList(items);
+    }
+
+    const folders = await APIFolder.getFolders();
+    setFolderList(folders);
+  }, [updateElements])
+
+  const getFolderByHash = async (hash) => {
+    if (folder) return folder;
+
+    hash = hash.replace("#", "");
+
+    if (hash.includes("edit")) {
+      let itemId;
+      [hash, itemId] = hash.replace("edit-", "").split("-");
+
+      const itemApi = await new APIItems(hash).getItem(itemId);
+
+      setElementTitle(itemApi.title);
+      setEditItem(itemApi);
+    }
+
+    const folderApi = await APIFolder.getFolder(hash);
+
+    setFolder(folderApi);
+
+    return folderApi;
+  }
 
   const addElement = async () => {
     if (elementTitle) {
-      console.log(elementTitle, folder);
 
       if (folder) {
-        UpdateItems(e => !e);
+        const api = new APIItems(folder.id);
 
-        return
+        if (editItem) {
+          await api.modifyItem(editItem.id, { title: elementTitle })
+          return StopEditing()
+        }
+
+        await api.createItem(elementTitle);
+      } else {
+        await APIFolder.createFolder(elementTitle);
       }
 
-      await APIFolder.createFolder(elementTitle);
-
-      setElementTitle("");
-      UpdateFolders(e => !e);
+      UpdateElements(e => !e);
     }
+  }
+
+  const Navigate = async (folder) => {
+    window.location.hash = (folder) ? folder.id : "";
+
+    setFolder(folder);
+    UpdateElements(e => !e);
+  }
+
+  const StopEditing = () => {
+    window.location.hash = folder.id;
+    UpdateElements(e => !e);
+  }
+
+  const StartEditing = (item) => {
+    window.location.hash = `${folder.id}-edit-${item.id}`;
+    console.log(item)
+    setElementTitle(item.title);
+    setEditItem(item);
   }
 
   const writeTitle = (e) => setElementTitle(e.target.value);
@@ -32,19 +97,40 @@ function App() {
     <div className="App">
       <div className="container">
         <div className="Folder-section">
-          <a className="Folder-link">Folders</a>
-          {(folder) ? " > " + folder : ""}
+          <HeaderComponent
+            folder={folder}
+            editMode={editItem}
+            SelectFolder={Navigate}
+          />
         </div>
         <div className="Element-container">
           {
             (folder)
-              ? folder
-              : FolderComponent(updateFolders, UpdateFolders)
+              ? (editItem)
+                ? ""
+                : ItemComponent(itemList, UpdateElements, StartEditing)
+              : FolderComponent(folderList, UpdateElements, Navigate)
           }
         </div>
-        <div className="Element-appender">
-          <input className="Appender-textInput" value={elementTitle} onChange={writeTitle} placeholder={"New " + (folder ? "Task" : "Folder")} />
-          <button className="Appender-button" onClick={addElement}>Add</button>
+        <div className={"Element-appender" + ((editItem) ? "-edit" : "")}>
+          <input
+            className="Appender-textInput"
+            value={elementTitle}
+            onChange={writeTitle}
+            placeholder={
+              (editItem)
+                ? editItem.title
+                : "New " + (folder ? "Task" : "Folder")
+            }
+          />
+          {
+            (editItem)
+              ? EditComponent(addElement, StopEditing)
+              : <button
+                className="Appender-button"
+                onClick={addElement}
+              >Add</button>
+          }
         </div>
       </div>
     </div>
