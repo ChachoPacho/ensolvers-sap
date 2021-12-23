@@ -61,6 +61,10 @@ export class APIItems extends API {
     return API.getElements(this.api);
   }
 
+  getItem(itemId) {
+    return API.getElements(this.getItemsApi(itemId));
+  }
+
   createItem(title) {
     return API.createElement(this.api, { title });
   }
