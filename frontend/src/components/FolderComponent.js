@@ -1,5 +1,4 @@
 import '../App.css';
-import { useEffect, useState } from 'react';
 import { APIFolder } from '../common/config';
 
 function FolderComponent(folders, Updater, SelectFolder) {
