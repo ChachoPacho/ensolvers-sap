@@ -9,16 +9,18 @@ function ExtraDirectory(title, goHome) {
   );
 }
 
-function HeaderComponent({ folder, SelectFolder }) {
+function HeaderComponent({ folder, editItem, SelectFolder }) {
 
   const goHome = () => SelectFolder(null);
 
   return (
     <>
       {
-        folder
-          ? ExtraDirectory(folder.title, goHome)
-          : <a className="Folder-link" >Folders</a>
+        editItem
+          ? <a className="Folder-link" >Editing Task {editItem.title}</a>
+          : folder
+            ? ExtraDirectory(folder.title, goHome)
+            : <a className="Folder-link" >Folders</a>
       }
     </>
   );

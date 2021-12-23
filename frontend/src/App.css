@@ -51,11 +51,15 @@
   padding-inline: 10px;
 }
 
-.Element-appender {
+.Element-appender,
+.Element-appender-edit {
   display: flex;
-  justify-content: center;
   width: 100%;
   margin-top: 30px;
+}
+
+.Element-appender-edit {
+  flex-wrap: wrap;
 }
 
 .Appender-textInput {
@@ -74,4 +78,25 @@
 
 .Decorator-separator {
   padding-inline: 10px;
+}
+
+.Appender-edit {
+  display: flex;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.Edit-button-r,
+.Edit-button-l {
+  max-width: 100px;
+  width: 22%;
+  padding: 5px;
+}
+
+.Edit-button-r {
+  margin-left: 1%;
+}
+
+.Edit-button-l {
+  margin-right: 1%;
 }
