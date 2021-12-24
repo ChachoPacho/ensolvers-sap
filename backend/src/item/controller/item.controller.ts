@@ -41,12 +41,12 @@ export class ItemController {
   }
 
   @Post()
-  create(
+  async create(
     @Param('folderId') folderId: number,
     @Body() body: any,
-  ): void {
+  ): Promise<void> {
     try {
-      this.itemService.create(folderId, body);
+      await this.itemService.create(folderId, body);
     }
     catch (err) {
       return err;
@@ -54,12 +54,12 @@ export class ItemController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: number,
     @Body() body: any,
-  ): any {
+  ): Promise<any> {
     try {
-      this.itemService.update(id, body);
+      await this.itemService.update(id, body);
     }
     catch (err) {
       return err;
@@ -67,11 +67,11 @@ export class ItemController {
   }
 
   @Delete(':id')
-  delete(
+  async delete(
     @Param('id') id: number,
   ): Promise<DeleteResult> {
     try {
-      return this.itemService.delete(id);
+      return await this.itemService.delete(id);
     }
     catch (err) {
       return err;

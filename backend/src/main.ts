@@ -9,6 +9,6 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, 'client'));
   app.setBaseViewsDir(join(__dirname, 'client'));
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
 bootstrap();

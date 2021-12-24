@@ -10,19 +10,19 @@ export class FolderService {
     private readonly folderRepo: Repository<Folder>,
   ) { }
 
-  findAll(): Promise<Folder[]> {
-    return this.folderRepo.find();
+  async findAll(): Promise<Folder[]> {
+    return await this.folderRepo.find();
   }
 
-  findOne(id: number): Promise<Folder> {
-    return this.folderRepo.findOne(id);
+  async findOne(id: number): Promise<Folder> {
+    return await this.folderRepo.findOne(id);
   }
 
-  create(body: any): void {
-    this.folderRepo.save(body);
+  async create(body: any): Promise<void> {
+    await this.folderRepo.save(body);
   }
 
-  delete(id: number): Promise<DeleteResult> {
-    return this.folderRepo.delete({ id });
+  async delete(id: number): Promise<DeleteResult> {
+    return await this.folderRepo.delete({ id });
   }
 }

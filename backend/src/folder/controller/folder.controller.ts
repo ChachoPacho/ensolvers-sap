@@ -39,11 +39,11 @@ export class FolderController {
   }
 
   @Post()
-  create(
+  async create(
     @Body() body: any,
-  ): void {
+  ): Promise<void> {
     try {
-      this.folderService.create(body);
+      await this.folderService.create(body);
     }
     catch (err) {
       return err;
@@ -51,11 +51,11 @@ export class FolderController {
   }
 
   @Delete(':id')
-  delete(
+  async delete(
     @Param('id') id: number,
   ): Promise<DeleteResult> {
     try {
-      return this.folderService.delete(id);
+      return await this.folderService.delete(id);
     }
     catch (err) {
       return err;
