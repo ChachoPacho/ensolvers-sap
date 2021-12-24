@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+    db: 
+        container_name: ensolvers_sap_db
+        image: postgres:13
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_USER: admin            # DATABASE USER
+            POSTGRES_PASSWORD: admin123     # DATABASE USER PASSWORD
+            POSTGRES_DB: ensolvers_sap      # DATABASE NAME
+        restart: always
+
+    prod:
+        container_name: ensolvers_sap_prod
+        image: ensolvers-api-prod:1.0.0
+        build:
+            context: .
+            target: production
+            dockerfile: ./Dockerfile
+        ports:
+            - 3000:3000                     # PRODUCTION PORTS
+            - 9229:9229                     # DEBUG PORTS
+        restart: unless-stopped
+        depends_on:
+          - db
+        environment:
+          - PORT=3000                       # IT HAS TO BE THE SAME AS IN "ports"
+          - DB_HOST=db                      # SYMLINK
+          - DB_PORT=5432                    # PORT WHERE DATABASE IS LOCATED
+          - DB_NAME=ensolvers_sap           # DATABASE NAME
+          - DB_USER=admin                   # DATABASE USER
+          - DB_PASS=admin123                # DATABASE USER PASSWORD

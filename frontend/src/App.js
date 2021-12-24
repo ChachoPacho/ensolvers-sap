@@ -86,7 +86,6 @@ function App() {
 
   const StartEditing = (item) => {
     window.location.hash = `${folder.id}-edit-${item.id}`;
-    console.log(item)
     setElementTitle(item.title);
     setEditItem(item);
   }
