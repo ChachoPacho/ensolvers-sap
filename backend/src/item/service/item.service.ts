@@ -11,26 +11,26 @@ export class ItemService {
     private readonly itemRepo: Repository<Item>,
   ) { }
 
-  findAll(folderId: number): Promise<Item[]> {
-    return this.itemRepo.find({ folderId });
+  async findAll(folderId: number): Promise<Item[]> {
+    return await this.itemRepo.find({ folderId });
   }
 
-  findOne(id: number): Promise<Item> {
-    return this.itemRepo.findOne({ id });
+  async findOne(id: number): Promise<Item> {
+    return await this.itemRepo.findOne({ id });
   }
 
-  create(folderId: number, body: any): void {
+  async create(folderId: number, body: any): Promise<void> {
     this.itemRepo.merge(body, { folderId });
-    this.itemRepo.save(body);
+    await this.itemRepo.save(body);
   }
 
   async update(id: number, body: any): Promise<void> {
     const item = await this.itemRepo.findOne({ id });
     this.itemRepo.merge(item, body);
-    this.itemRepo.save(item);
+    await this.itemRepo.save(item);
   }
 
-  delete(id: number): Promise<DeleteResult> {
-    return this.itemRepo.delete({ id });
+  async delete(id: number): Promise<DeleteResult> {
+    return await this.itemRepo.delete({ id });
   }
 }
