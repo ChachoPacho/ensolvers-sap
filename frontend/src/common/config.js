@@ -1,5 +1,7 @@
+import env from "./env"
+
 export class API {
-  static target = "http://localhost:4000";
+  static target = env.API;
   static folders = API.target + "/folders";
 
   static getFoldersApi(folderId) {
@@ -11,8 +13,8 @@ export class API {
     return response.json();
   }
 
-  static createElement(url, data) {
-    return fetch(url, {
+  static async createElement(url, data) {
+    return await fetch(url, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -28,20 +30,20 @@ export class API {
 
 export class APIFolder extends API {
 
-  static getFolders() {
-    return API.getElements(APIFolder.folders);
+  static async getFolders() {
+    return await API.getElements(APIFolder.folders);
   }
 
-  static getFolder(folderId) {
-    return API.getElements(API.getFoldersApi(folderId));
+  static async getFolder(folderId) {
+    return await API.getElements(API.getFoldersApi(folderId));
   }
 
-  static createFolder(title) {
-    return API.createElement(APIFolder.folders, { title });
+  static async createFolder(title) {
+    return await API.createElement(APIFolder.folders, { title });
   }
 
-  static deleteFolder(folderId) {
-    return API.deleteElement(API.getFoldersApi(folderId));
+  static async deleteFolder(folderId) {
+    return await API.deleteElement(API.getFoldersApi(folderId));
   }
 
 }
@@ -57,24 +59,24 @@ export class APIItems extends API {
     return `${this.api}/${itemId}`;
   }
 
-  getItems() {
-    return API.getElements(this.api);
+  async getItems() {
+    return await API.getElements(this.api);
   }
 
-  getItem(itemId) {
-    return API.getElements(this.getItemsApi(itemId));
+  async getItem(itemId) {
+    return await API.getElements(this.getItemsApi(itemId));
   }
 
-  createItem(title) {
-    return API.createElement(this.api, { title });
+  async createItem(title) {
+    return await API.createElement(this.api, { title });
   }
 
-  deleteItem(itemId) {
-    return API.deleteElement(this.getItemsApi(itemId));
+  async deleteItem(itemId) {
+    return await API.deleteElement(this.getItemsApi(itemId));
   }
 
-  modifyItem(itemId, data) {
-    return fetch(this.getItemsApi(itemId), {
+  async modifyItem(itemId, data) {
+    return await fetch(this.getItemsApi(itemId), {
       method: "PATCH",
       body: JSON.stringify(data),
       headers: {
